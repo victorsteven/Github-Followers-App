@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <div class="wrapper_input">
       <form @submit.prevent = "search">
         <input 
@@ -22,6 +22,59 @@
           Search
         </button>
       </form>
+    </div>
+
+    <div v-if="the_user && found">
+      <div class="header_style">
+        <h3>Profile</h3>
+      </div>
+      <article class="panel">
+        <div class="panel_right">
+          <h2 class="panel_name">{{ the_user.name }}</h2>
+          <div class="panel_bio">{{ the_user.bio }}</div>
+          <div class="panel_followers" v-if="the_user.followers">{{ the_user.followers }}</div>
+          <p>{{ the_user.location }}</p>
+        </div>
+        <div class="panel_left"> 
+          <div class="panel_image">
+            <img v-if="the_user.avatar_url" :src="the_user.avatar_url" :alt="the_user.name">
+          </div>
+        </div>
+      </article>
+      
+      <div class="wrapper" v-if="the_followers.length > 0 && !lastItem">
+          <button
+          v-if="loading"
+          :disabled="disabled" 
+          type="button" 
+          class="load_more"
+          >
+          Loading ...
+        </button>
+  
+        <button
+          :disabled="disabled" 
+          v-if="!loading"
+          @click="getMoreFollowers"
+          type="button" 
+          class="load_more"
+          >
+          Load More
+        </button>
+      </div>
+    </div>
+    <div v-if="not_user && not_found">
+      <article class="panel">
+        <div class="panel_right">
+          <h2 class="panel_name">No User found</h2>
+          <div class="panel_bio">Sorry. This user does not exists</div>
+        </div>
+        <div class="panel_left"> 
+          <div class="panel_alt_image">
+            <img  src="/images/user_404.png" alt="User not found">
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 
