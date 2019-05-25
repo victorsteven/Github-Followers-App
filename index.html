@@ -41,6 +41,17 @@
           </div>
         </div>
       </article>
+
+      <div class="header_style" v-if="the_followers.length > 0">
+        <h3>Followers</h3>
+      </div>
+      <span v-for="(follower, index) in the_followers" :key="index">
+        <div class="follower_style" v-if="the_user">
+            <div class="follower_image">
+                <img v-if="follower.avatar_url" :src="follower.avatar_url" alt="no photo">
+            </div>
+        </div>
+      </span>
       
       <div class="wrapper" v-if="the_followers.length > 0 && !lastItem">
           <button
