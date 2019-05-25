@@ -9,11 +9,23 @@ new Vue({
     userObject: {},
     not_user: false,
     found: '',
-    not_found: ''
+    not_found: '',
+    followers: '',
+    the_followers: '',
+    followersObject: {},
+    next_url: '',
+    lastItem: false,
+
   },
 
   mounted() {
     console.log('Component mounted')
+  },
+
+  computed: {
+    disabled(){
+      return this.loading;
+    },
   },
 
   methods: {
@@ -33,6 +45,8 @@ new Vue({
                 this.the_user = user_json
                 console.log('This is the user: ', this.the_user);
 
+                this.getFollowers(this.the_user.followers_url);
+
               this.loading = false
 
               return;
@@ -48,6 +62,50 @@ new Vue({
           }).catch((err) => {
           console.log('error getting the user: ', err);
       });
+    },
+
+    getFollowers(url) {
+
+      this.loading = true
+
+      fetch(url)
+        .then(res => {
+          this.loading = false
+          this.followersObject = res;
+          return res.json();
+        })
+        .then(follower_json => {
+          const links = this.getLinks(this.followersObject.headers.get('link'));
+          const nextUrl = links._next;
+            if (this.userObject.status === 200) {
+              this.the_followers = follower_json
+              this.next_url = nextUrl
+
+              console.log('These are the first 30 followers: ', this.the_followers);
+
+              if (this.the_followers.length < 30) {
+                this.lastItem = true;
+                console.log('the followers are less than  30')
+              }
+            return;
+          }
+          this.the_followers = follower_json
+        }).catch(err => {
+          console.log('these are the errors getting followers: ', err);
+        })
+    },
+
+    getLinks(theLinks) {
+      var links = {};
+      if (!theLinks) {
+          return links;
+      }
+      theLinks.split(',').forEach((eachComponent) => {
+          let url = eachComponent.substring(eachComponent.indexOf('<') + 1, eachComponent.indexOf('>'));
+          let rel = eachComponent.substring(eachComponent.indexOf('rel="') + 5).replace('"', '');
+          links['_' + rel] = url;
+      });
+      return links;
     },
   }
 });
