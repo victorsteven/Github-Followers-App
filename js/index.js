@@ -81,8 +81,6 @@ new Vue({
               this.the_followers = follower_json
               this.next_url = nextUrl
 
-              console.log('These are the first 30 followers: ', this.the_followers);
-
               if (this.the_followers.length < 30) {
                 this.lastItem = true;
                 console.log('the followers are less than  30')
@@ -106,6 +104,39 @@ new Vue({
           links['_' + rel] = url;
       });
       return links;
+    },
+
+
+    getMoreFollowers() {
+
+      this.loading = true
+
+      fetch(this.next_url)
+        .then(res => {
+          this.followersObject = res;
+          return res.json();
+        })
+        .then(follower_json => {
+          
+          this.loading = false
+
+          const links = this.getLinks(this.followersObject.headers.get('link'));
+          const nextUrl = links._next;
+          
+          if (this.userObject.status === 200) {
+            follower_json.forEach(follower => {
+              this.the_followers.push(follower);
+            })
+            if (nextUrl === undefined) {
+              this.lastItem = true;
+            } else {
+              this.next_url = nextUrl
+            } 
+          return;
+        }
+        }).catch(err => {
+          console.log('these are the errors getting new followers: ', err);
+        })
     },
   }
 });

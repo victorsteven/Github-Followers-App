@@ -10,6 +10,9 @@
 </head>
 <body>
   <div id="app" v-cloak>
+    <div class="preloader-background" v-if="loading">
+        <p class="loader" style="font-size: 40px; color: #304ffe"></p>
+    </div>
     <div class="wrapper_input">
       <form @submit.prevent = "search">
         <input 
@@ -55,12 +58,12 @@
       
       <div class="wrapper" v-if="the_followers.length > 0 && !lastItem">
           <button
-          v-if="loading"
-          :disabled="disabled" 
-          type="button" 
-          class="load_more"
-          >
-          Loading ...
+            v-if="loading"
+            :disabled="disabled" 
+            type="button" 
+            class="load_more"
+            >
+            Loading ...
         </button>
   
         <button
@@ -74,6 +77,7 @@
         </button>
       </div>
     </div>
+
     <div v-if="not_user && not_found">
       <article class="panel">
         <div class="panel_right">
