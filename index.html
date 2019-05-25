@@ -10,7 +10,19 @@
 </head>
 <body>
   <div id="app">
-    Welcome
+    <div class="wrapper_input">
+      <form @submit.prevent = "search">
+        <input 
+            type="text" 
+            class="input_search" 
+            v-model="username" 
+            placeholder="Search for Github User..."
+        >
+        <button type="submit" class="button_search">
+          Search
+        </button>
+      </form>
+    </div>
   </div>
 
   <script src="/js/index.js"></script>
